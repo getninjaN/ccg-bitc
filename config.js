@@ -8,6 +8,9 @@ const defaults = {
     fontSize: "70pt",
     infoPosition: "bottom" // position of lower position ("top"/"bottom")
   },
+  tc: {
+    showFrames: true // show .000 in timecode (true/false)
+  },
   osc: {
     port: 5253
   },
