@@ -1,15 +1,15 @@
 const osc = require("osc");
-const WebSocket  = require('ws');
-const express = require('express');
+const WebSocket  = require("ws");
+const express = require("express");
 const os = require("os");
 const { CasparCG, ConnectionOptions } = require("casparcg-connection");
 
-const config = require('./config')
+const config = require("./config")
 
 const connection = new CasparCG(new ConnectionOptions ({
   host: config.caspar.host,
   port: config.caspar.port,
-
+  
   autoReconnect: true,
   autoReconnectInterval: 10000,
 }));
@@ -17,7 +17,7 @@ const connection = new CasparCG(new ConnectionOptions ({
 function getIPAddresses() {
   const interfaces = os.networkInterfaces();
   const ipAddresses = [];
-
+  
   for (var deviceName in interfaces) {
     var addresses = interfaces[deviceName];
     for (let addressInfo of addresses) {
@@ -26,7 +26,7 @@ function getIPAddresses() {
       }
     }
   }
-
+  
   return ipAddresses;
 }
 
@@ -40,12 +40,12 @@ function launchOverlay(){
   connection.clear(config.output.channel).catch(() => {
     console.error("Failed to clear output channel")
   });
-  connection.playHtmlPage(config.output.channel, 100, "http://127.0.0.1:"+config.http.port+"/index.html").catch(() => {
-    console.error("Failed to clear output overlay")
-  });
-  connection.play(config.output.channel, 90, "route://"+config.source.channel+"-"+config.source.layer).catch(() => {
-    console.error("Failed to play output route")
-  });
+  connection.playHtmlPage(config.output.channel, 100, "http://127.0.0.1:" + config.http.port + "/index.html").catch(() => {
+  console.error("Failed to clear output overlay")
+});
+connection.play(config.output.channel, 90, "route://" + config.source.channel + "-" + config.source.layer).catch(() => {
+console.error("Failed to play output route")
+});
 }
 
 oscClient.on("open", function () {
@@ -54,8 +54,8 @@ oscClient.on("open", function () {
   ipAddresses.forEach(function (address) {
     console.log(" Host:", address + ", Port:", config.osc.port);
   });
-  console.log("Overlay is available at http://127.0.0.1:"+config.http.port+" in your web browser.");
-
+  console.log("Overlay is available at http://127.0.0.1:" + config.http.port + " in your web browser.");
+  
   launchOverlay();
 });
 
@@ -75,8 +75,8 @@ function padStr(v, ch, len) {
 }
 
 function formatTimecode(t) {
-  const str = `${padStr(t.m, '0', 2)}:${padStr(t.s, '0', 2)}.${padStr(t.f, '0', 3)}`
-  if (typeof t.h !== 'undefined') {
+  const str = `${padStr(t.m, "0", 2)}:${padStr(t.s, "0", 2)}.${padStr(t.f, "0", 3)}`
+  if (typeof t.h !== "undefined") {
     return `${t.h}:${str}`;
   }
   else {
@@ -86,25 +86,25 @@ function formatTimecode(t) {
 
 function processState(block) {
   if (block.name === null)
-    return { top: "Player", bottom: "empty" };
-
+  return { top: "Player", bottom: "empty" };
+  
   if (block.current == -1)
-    return null;
-
- 
+  return null;
+  
+  
   if (block.fps === 0) {
     const calcTimings = (time, useHours) => {
       const seconds = Math.floor(time);
       const milliseconds = Math.floor((time - seconds) * 1000);
       const minutes = Math.floor(seconds / 60)
       const hours = useHours ? Math.floor(minutes / 60) + 10 : undefined
-
-      return formatTimecode({h: hours, m: minutes % 60, s: seconds % 60, f: milliseconds})
+      
+      return formatTimecode({ h: hours, m: minutes % 60, s: seconds % 60, f: milliseconds })
     }
-
+    
     return {
       top: calcTimings(block.current, true) + "&nbsp;&nbsp;" + calcTimings(block.total - block.current),
-      bottom: block.name
+      bottom: block.name.split("/").at(-1)
     };
   } else {
     const calcTimings = (time, useHours) => {
@@ -112,13 +112,13 @@ function processState(block) {
       const cm = Math.floor(cs / 60)
       const ch = useHours ? Math.floor(cm / 60) + 10 : undefined
       const cf = (time % block.fps);
-
-      return formatTimecode({h: ch, m: cm % 60, s: cs % 60, f: cf})
+      
+      return formatTimecode({ h: ch, m: cm % 60, s: cs % 60, f: cf })
     }
-
+    
     return {
       top: calcTimings(block.current, true) + "&nbsp;&nbsp;" + calcTimings(block.total - block.current),
-      bottom: block.name
+      bottom: block.name.split("/").at(-1)
     };
   }
 }
@@ -128,21 +128,21 @@ var sockets = [];
 function emitState() {
   const toSend = processState(currentState);
   if (toSend == null)
-    return;
-
+  return;
+  
   const toSendStr = JSON.stringify(toSend);
-
+  
   var socketsToRemove = [];
-
+  
   for(var i = 0; i < sockets.length; i++) {
     sockets[i].send(toSendStr, function ack(error) {
-      if(typeof error !== 'undefined') {
+      if(typeof error !== "undefined") {
         console.log("Socket error: " + error);
         socketsToRemove.push(i);
       }
-   });
+    });
   }
-
+  
   for(s of socketsToRemove) {
     sockets.splice(s, 1);
   }
@@ -152,7 +152,7 @@ var resetTimeout = null;
 
 function clearState(){
   if (currentState.paused)
-    return;
+  return;
   
   currentState.total = 0;
   currentState.current = 0;
@@ -164,17 +164,17 @@ function clearState(){
 
 oscClient.on("message", function(message) {
   // console.log(message.address)
-  if(message.address === "/channel/"+config.source.channel+"/stage/layer/"+config.source.layer+"/paused") {
+  if(message.address === "/channel/" + config.source.channel + "/stage/layer/" + config.source.layer + "/paused") {
     currentState.paused = message.args[0]
     
     if (currentState.paused) {
       if (resetTimeout != null)
       clearTimeout(resetTimeout);
-    
+      
       resetTimeout = setTimeout(clearState, 150);
     }
   }
-  else if(message.address === "/channel/"+config.source.channel+"/stage/layer/"+config.source.layer+"/file/frame" || message.address === "/channel/"+config.source.channel+"/stage/layer/"+config.source.layer+"/frame") {
+  else if(message.address === "/channel/" + config.source.channel + "/stage/layer/" + config.source.layer + "/file/frame" || message.address === "/channel/" + config.source.channel + "/stage/layer/" + config.source.layer + "/frame") {
     currentState.current = message.args[0].low ;//- 1; // TODO - why is this -2? is causing issues!
     currentState.total = message.args[1].low;
     emitState();
@@ -183,20 +183,20 @@ oscClient.on("message", function(message) {
     currentState.current = message.args[0];
     currentState.total = message.args[1];
     currentState.fps = 0;
-
+    
     emitState();
   }
-  else if(message.address === "/channel/"+config.source.channel+"/stage/layer/"+config.source.layer+"/file/fps") {
+  else if(message.address === "/channel/" + config.source.channel + "/stage/layer/" + config.source.layer + "/file/fps") {
     currentState.fps = message.args[0];
     emitState();
   }
-  else if(message.address === "/channel/"+config.source.channel+"/stage/layer/"+config.source.layer+"/file/path" || message.address === `/channel/${config.source.channel}/stage/layer/${config.source.layer}/foreground/file/name`) {
+  else if(message.address === "/channel/" + config.source.channel + "/stage/layer/" + config.source.layer + "/file/path" || message.address === `/channel/${config.source.channel}/stage/layer/${config.source.layer}/foreground/file/name`) {
     if (resetTimeout != null)
-      clearTimeout(resetTimeout);
+    clearTimeout(resetTimeout);
     
     resetTimeout = setTimeout(clearState, 150);
-  
-    currentState.name = message.args[0].slice(0,-4).substring(0, 35);
+    
+    currentState.name = message.args[0].slice(0, -4).substring(0, 35);
     emitState();
   }
 });
@@ -207,17 +207,22 @@ oscClient.open();
 const app = express();
 const server = app.listen(config.http.port);
 const wss = new WebSocket.Server({
-    server: server
+  server: server
 });
 
-app.use(express.static(__dirname  + '/web'));
+app.use(express.static(__dirname  + "/web"));
 
 wss.on("connection", function (socket) {
   console.log("A client as connected!");
+  socket.send(JSON.stringify({
+    msg: "config",
+    config: config.html
+  }))
+  
   sockets.push(socket);
 });
 
 const stdin = process.openStdin()
 stdin.resume();
-stdin.on('data', launchOverlay);
+stdin.on("data", launchOverlay);
 console.log("Press enter to reinitialise the overlay")

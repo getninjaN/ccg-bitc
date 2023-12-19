@@ -27,13 +27,15 @@ CasparCG needs to have at least 2 channels (one for playback, one for the overla
 ### BITC
 Various configuration options are available. These should be specified when starting the program.
 
-| Option | Default | Description |
-|-|-|-|
-| --http.port | 8081 | Port to serve the html overlay on |
-| --osc.port | 5253 | Port to listen to OSC on |
-| --caspar.host | 127.0.0.1 | IP address of caspar host|
-| --caspar.port | 5250 | Port of caspar host |
-| --source.channel | 1 | Channel of clip to monitor |
-| --source.layer | 10 | Layer of clip to monitor |
-| --output.channel | 2 | Channel to use for output with overlay |
+| Option | Default | Description | Values |
+|-|-|-|-|
+| --http.port | 8081 | Port to serve the html overlay on | |
+| --osc.port | 5253 | Port to listen to OSC on | |
+| --caspar.host | 127.0.0.1 | IP address of caspar host| |
+| --caspar.port | 5250 | Port of caspar host | |
+| --source.channel | 1 | Channel of clip to monitor | |
+| --source.layer | 10 | Layer of clip to monitor | |
+| --output.channel | 2 | Channel to use for output with overlay | |
+| --html.fontSize | 70pt | Font size on HTML page | |
+| --html.infoPosition | top | Position of clip info | top / bottom |
 
