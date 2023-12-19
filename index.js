@@ -75,7 +75,10 @@ function padStr(v, ch, len) {
 }
 
 function formatTimecode(t) {
-  const str = `${padStr(t.m, "0", 2)}:${padStr(t.s, "0", 2)}.${padStr(t.f, "0", 3)}`
+  let str = `${padStr(t.m, "0", 2)}:${padStr(t.s, "0", 2)}`
+  if (config.tc && config.tc.showFrames) {
+    str = `${str}.${padStr(t.f, "0", 3)}`
+  }
   if (typeof t.h !== "undefined") {
     return `${t.h}:${str}`;
   }
