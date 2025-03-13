@@ -2,17 +2,17 @@ const osc = require("osc");
 const WebSocket  = require("ws");
 const express = require("express");
 const os = require("os");
-const { CasparCG, ConnectionOptions } = require("casparcg-connection");
+const { CasparCG } = require("casparcg-connection");
 
 const config = require("./config")
 
-const connection = new CasparCG(new ConnectionOptions ({
+const connection = new CasparCG({
   host: config.caspar.host,
   port: config.caspar.port,
   
   autoReconnect: true,
   autoReconnectInterval: 10000,
-}));
+});
 
 function getIPAddresses() {
   const interfaces = os.networkInterfaces();
@@ -40,7 +40,7 @@ function launchOverlay(){
   connection.clear(config.output.channel).catch(() => {
     console.error("Failed to clear output channel")
   });
-  connection.playHtmlPage(config.output.channel, 100, "http://127.0.0.1:" + config.http.port + "/index.html").catch(() => {
+  connection.playHtml(config.output.channel, 100, "http://127.0.0.1:" + config.http.port + "/index.html").catch(() => {
   console.error("Failed to clear output overlay")
 });
 connection.play(config.output.channel, 90, "route://" + config.source.channel + "-" + config.source.layer).catch(() => {
