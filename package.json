@@ -13,15 +13,15 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "casparcg-connection": "^4.9.0",
-    "express": "^4.17.1",
-    "nconf": "^0.10.0",
-    "osc": "^2.4.0",
-    "tslib": "^1.14.1",
-    "ws": "^1.1.5"
+    "casparcg-connection": "^6.3.0",
+    "express": "^4.21.2",
+    "nconf": "^0.12.1",
+    "osc": "^2.4.5",
+    "tslib": "^2.8.1",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.1.9",
     "pkg": "^5.8.1"
   },
   "pkg": {
