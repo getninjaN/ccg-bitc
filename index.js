@@ -64,6 +64,10 @@ async function launchOverlay(){
 
 oscClient.on("open", function () {
   const ipAddresses = getIPAddresses();
+  console.log("Config:")
+  console.log(JSON.stringify(config))
+  console.log(" ")
+
   console.log("Listening for OSC over UDP.");
   ipAddresses.forEach(function (address) {
     console.log(" Host:", address + ", Port:", config.osc.port);
