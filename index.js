@@ -106,7 +106,7 @@ function processState(block) {
     }
     
     return {
-      top: calcTimings(block.current, true) + "&nbsp;&nbsp;" + calcTimings(block.total - block.current),
+      top: calcTimings(block.current, config.tc.useHours) + "&nbsp;&nbsp;" + calcTimings(block.total - block.current),
       bottom: block.name.split("/").at(-1)
     };
   } else {
@@ -120,7 +120,7 @@ function processState(block) {
     }
     
     return {
-      top: calcTimings(block.current, true) + "&nbsp;&nbsp;" + calcTimings(block.total - block.current),
+      top: calcTimings(block.current, config.tc.useHours) + "&nbsp;&nbsp;" + calcTimings(block.total - block.current),
       bottom: block.name.split("/").at(-1)
     };
   }

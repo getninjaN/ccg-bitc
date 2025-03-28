@@ -9,6 +9,7 @@ const defaults = {
     infoPosition: "bottom" // position of lower position ("top"/"bottom")
   },
   tc: {
+    useHours: false,
     showFrames: true // show .000 in timecode (true/false)
   },
   osc: {
