@@ -36,16 +36,30 @@ const oscClient = new osc.UDPPort({
   localPort: config.osc.port
 });
 
-function launchOverlay(){
-  connection.clear(config.output.channel).catch(() => {
+async function launchOverlay(){
+  const { clearError, clearRequest } = await connection.clear({ channel: config.output.channel })
+  if (clearError) {
     console.error("Failed to clear output channel")
-  });
-  connection.playHtml(config.output.channel, 100, "http://127.0.0.1:" + config.http.port + "/index.html").catch(() => {
-  console.error("Failed to clear output overlay")
-});
-connection.play(config.output.channel, 90, "route://" + config.source.channel + "-" + config.source.layer).catch(() => {
-console.error("Failed to play output route")
-});
+    console.error(clearError)
+  } else {
+    await clearRequest
+  }
+
+  const { htmlError, htmlRequest } = await connection.playHtml({ channel: config.output.channel, layer: 100, url: "http://127.0.0.1:" + config.http.port + "/index.html" })
+  if (htmlError) {
+    console.error("Failed to clear output overlay")
+    console.error(htmlError)
+  } else {
+    await htmlRequest
+  }
+
+  const { routeError, routeRequest } = await connection.play(config.output.channel, 90, "route://" + config.source.channel + "-" + config.source.layer)
+  if (routeError) {
+    console.error("Failed to play output route")
+    console.error(routeError)
+  } else {
+    await routeRequest
+  }
 }
 
 oscClient.on("open", function () {
@@ -54,6 +68,7 @@ oscClient.on("open", function () {
   ipAddresses.forEach(function (address) {
     console.log(" Host:", address + ", Port:", config.osc.port);
   });
+  
   console.log("Overlay is available at http://127.0.0.1:" + config.http.port + " in your web browser.");
   
   launchOverlay();
