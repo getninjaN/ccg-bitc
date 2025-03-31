@@ -37,6 +37,7 @@ Various configuration options are available. These should be specified when star
 | --source.layer | 10 | Layer of clip to monitor | |
 | --output.channel | 2 | Channel to use for output with overlay | |
 | --tc.showFrames | true | Show .000 in timecode | true / false |
+| --tc.useHours | false | Show 10: in timecode | true / false |
 | --html.fontSize | 70pt | Font size on HTML page | |
 | --html.infoPosition | top | Position of clip info | top / bottom |
 
