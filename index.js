@@ -53,7 +53,7 @@ async function launchOverlay(){
     await htmlRequest
   }
 
-  const { routeError, routeRequest } = await connection.play(config.output.channel, 90, "route://" + config.source.channel + "-" + config.source.layer)
+  const { routeError, routeRequest } = await connection.play({ channel: config.output.channel, layer: 90, "route://" + config.source.channel + "-" + config.source.layer })
   if (routeError) {
     console.error("Failed to play output route")
     console.error(routeError)
@@ -158,7 +158,7 @@ function emitState() {
   
   for(var i = 0; i < sockets.length; i++) {
     sockets[i].send(toSendStr, function ack(error) {
-      if(typeof error !== "undefined") {
+      if(error) {
         console.log("Socket error: " + error);
         socketsToRemove.push(i);
       }
@@ -235,7 +235,7 @@ const wss = new WebSocket.Server({
 app.use(express.static(__dirname  + "/web"));
 
 wss.on("connection", function (socket) {
-  console.log("A client as connected!");
+  console.log("A client has connected!");
   socket.send(JSON.stringify({
     msg: "config",
     config: config.html
