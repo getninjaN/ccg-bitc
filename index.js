@@ -53,7 +53,7 @@ async function launchOverlay(){
     await htmlRequest
   }
 
-  const { routeError, routeRequest } = await connection.play({ channel: config.output.channel, layer: 90, "route://" + config.source.channel + "-" + config.source.layer })
+  const { routeError, routeRequest } = await connection.play({ channel: config.output.channel, layer: 90, clip: "route://" + config.source.channel + "-" + config.source.layer })
   if (routeError) {
     console.error("Failed to play output route")
     console.error(routeError)
